@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="black">#FF000000</color>
+    <color name="white">#FFFFFFFF</color>
+    <color name="dark_text">#003B46</color>
+    <color name="dark_color">#07575B</color>
+    <color name="light_color">#66A5AD</color>
+    <color name="card_color">#EEF7FB</color>
+    <color name="statusbar_color">#07575B</color>
+    <color name="green">#4CAF50</color>
+    <color name="light_brown">#C4A484</color>
+    <color name="edit_light">#9bbbbd</color>
+</resources>

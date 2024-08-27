@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "278348136645",
+    "project_id": "studenttrackingapp-41ca4",
+    "storage_bucket": "studenttrackingapp-41ca4.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:278348136645:android:8318956d073c9df2aa70ac",
+        "android_client_info": {
+          "package_name": "com.example.studenttrackingapp"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyClq6L3Bd2rUEGbRn6NfOe7h5JIto-7_Sk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

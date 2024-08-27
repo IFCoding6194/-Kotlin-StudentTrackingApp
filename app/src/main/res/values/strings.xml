@@ -1,0 +1,30 @@
+<resources>
+    <string name="app_name">StudentTrackingApp</string>
+
+    <!-- Style for TextInputLayout with outlined box -->
+    <style name="AppTheme.TextInputLayout.OutlinedBox" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+        <item name="boxBackgroundColor">@android:color/white</item>
+        <item name="boxStrokeColor">@color/edit_light</item>
+        <item name="hintTextColor">@color/edit_light</item>
+
+        <!-- Customize the floating label text appearance -->
+        <item name="hintTextAppearance">@style/AppTheme.TextAppearance.TextInputLayout</item>
+        <item name="android:textSize">16sp</item>
+        <item name="android:textColor">@android:color/black</item>
+        <item name="android:textColorHint">@color/edit_light</item>
+    </style>
+
+    <!-- Style for the floating label text -->
+    <style name="AppTheme.TextAppearance.TextInputLayout" parent="TextAppearance.MaterialComponents.Caption">
+        <item name="android:textSize">14sp</item>
+        <item name="android:textColor">@color/edit_light</item>
+
+    </style>
+    <!-- Strings used for fragments for navigation -->
+    <string name="first_fragment_label">First Fragment</string>
+    <string name="second_fragment_label">Second Fragment</string>
+    <string name="next">Next</string>
+    <string name="previous">Previous</string>
+
+
+</resources>
