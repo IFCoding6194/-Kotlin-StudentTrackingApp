@@ -24,11 +24,14 @@ import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
 import java.io.IOException
 import java.util.Locale
+import androidx.appcompat.widget.SearchView
 
 class MapActivity : AppCompatActivity(), OnMapReadyCallback {
     private lateinit var binding: ActivityMapBinding
     private lateinit var mMap: GoogleMap
     private lateinit var fusedLocationClient: FusedLocationProviderClient
+    private var selectedLatLng: LatLng? = null
+    private var selectedAddress: String? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -48,6 +51,22 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
         val mapFragment = supportFragmentManager
             .findFragmentById(R.id.mapFragment) as SupportMapFragment
         mapFragment.getMapAsync(this)
+
+        binding.addButton.setOnClickListener {
+            selectedAddress?.let {
+                binding.selectedLocationTv.text = it
+                Toast.makeText(this, "Location added: $it", Toast.LENGTH_SHORT).show()
+                // Optionally return the result to another activity
+                val resultIntent = Intent()
+                resultIntent.putExtra("address", it)
+                setResult(Activity.RESULT_OK, resultIntent)
+                finish()
+            } ?: run {
+                Toast.makeText(this, "Please select a location", Toast.LENGTH_SHORT).show()
+            }
+        }
+
+        setupSearchView()
     }
 
     override fun onMapReady(googleMap: GoogleMap) {
@@ -84,7 +103,48 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
         mMap.setOnMapClickListener { latLng ->
             mMap.clear()
             mMap.addMarker(MarkerOptions().position(latLng).title("Selected Location"))
+            selectedLatLng = latLng
             getAddressFromLatLng(latLng)
+        }
+    }
+
+    private fun setupSearchView() {
+        val searchView = findViewById<SearchView>(R.id.searchView)
+        searchView.queryHint = "Search location"
+        searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+            override fun onQueryTextSubmit(query: String?): Boolean {
+                query?.let {
+                    searchLocation(it)
+                }
+                return true
+            }
+
+            override fun onQueryTextChange(newText: String?): Boolean {
+                return false
+            }
+        })
+    }
+
+    private fun searchLocation(query: String) {
+        val geocoder = Geocoder(this)
+        try {
+            val addressList = geocoder.getFromLocationName(query, 1)
+            if (!addressList.isNullOrEmpty()) {
+                val address = addressList[0]
+                val latLng = LatLng(address.latitude, address.longitude)
+                mMap.clear()
+                mMap.addMarker(MarkerOptions().position(latLng).title(address.getAddressLine(0)))
+                mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 15f))
+                selectedLatLng = latLng
+                selectedAddress = address.getAddressLine(0)
+                binding.selectedLocationTv.text = "Selected Location : " + selectedAddress
+                Toast.makeText(this, selectedAddress, Toast.LENGTH_SHORT).show()
+            } else {
+                Toast.makeText(this, "Location not found", Toast.LENGTH_SHORT).show()
+            }
+        } catch (e: IOException) {
+            e.printStackTrace()
+            Toast.makeText(this, "Geocoding failed, please try again", Toast.LENGTH_SHORT).show()
         }
     }
 
@@ -92,25 +152,19 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
         val geocoder = Geocoder(this, Locale.getDefault())
         try {
             val addresses = geocoder.getFromLocation(latLng.latitude, latLng.longitude, 1)
-
             if (!addresses.isNullOrEmpty()) {
-                val address = addresses[0].getAddressLine(0)
-                Toast.makeText(this, address, Toast.LENGTH_SHORT).show()
-
-                // Pass the address back to the main activity
-                val resultIntent = Intent()
-                resultIntent.putExtra("address", address)
-                setResult(Activity.RESULT_OK, resultIntent)
-                finish()
+                selectedAddress = addresses[0].getAddressLine(0)
+                binding.selectedLocationTv.text = "Selected Location : " + selectedAddress
+                Toast.makeText(this, selectedAddress, Toast.LENGTH_SHORT).show()
             } else {
+                selectedAddress = null
                 Toast.makeText(this, "Address not found", Toast.LENGTH_SHORT).show()
             }
-
         } catch (e: IOException) {
             e.printStackTrace()
+            Toast.makeText(this, "Geocoding failed, please try again", Toast.LENGTH_SHORT).show()
         }
     }
-
 
     companion object {
         private const val LOCATION_PERMISSION_REQUEST_CODE = 1
@@ -123,7 +177,6 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
     ) {
         if (requestCode == LOCATION_PERMISSION_REQUEST_CODE) {
             if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                // Permission granted
                 onMapReady(mMap)
             } else {
                 Toast.makeText(
@@ -135,5 +188,4 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
         }
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
     }
-
 }
