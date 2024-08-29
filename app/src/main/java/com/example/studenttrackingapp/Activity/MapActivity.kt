@@ -66,6 +66,58 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
             }
         }
 
+
+        binding.correndLocationImg.setOnClickListener {
+            if (ActivityCompat.checkSelfPermission(
+                    this,
+                    Manifest.permission.ACCESS_FINE_LOCATION
+                ) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
+                    this,
+                    Manifest.permission.ACCESS_COARSE_LOCATION
+                ) != PackageManager.PERMISSION_GRANTED
+            ) {
+                // Request location permissions
+                ActivityCompat.requestPermissions(
+                    this,
+                    arrayOf(
+                        Manifest.permission.ACCESS_FINE_LOCATION,
+                        Manifest.permission.ACCESS_COARSE_LOCATION
+                    ),
+                    LOCATION_PERMISSION_REQUEST_CODE
+                )
+                return@setOnClickListener
+            }
+
+            val locationManager =
+                getSystemService(LOCATION_SERVICE) as android.location.LocationManager
+            val isLocationEnabled =
+                locationManager.isProviderEnabled(android.location.LocationManager.GPS_PROVIDER) ||
+                        locationManager.isProviderEnabled(android.location.LocationManager.NETWORK_PROVIDER)
+
+            if (!isLocationEnabled) {
+                Toast.makeText(
+                    this,
+                    "Please enable location services in your device.",
+                    Toast.LENGTH_SHORT
+                ).show()
+            } else {
+                fusedLocationClient.lastLocation.addOnSuccessListener { location: Location? ->
+                    location?.let {
+                        val currentLatLng = LatLng(it.latitude, it.longitude)
+                        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(currentLatLng, 15f))
+                        mMap.clear()
+                        mMap.addMarker(
+                            MarkerOptions().position(currentLatLng).title("Current Location")
+                        )
+                        getAddressFromLatLng(currentLatLng)
+                    } ?: run {
+                        Toast.makeText(this, "Unable to get current location.", Toast.LENGTH_SHORT)
+                            .show()
+                    }
+                }
+            }
+        }
+
         setupSearchView()
     }
 

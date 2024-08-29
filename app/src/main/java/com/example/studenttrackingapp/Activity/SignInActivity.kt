@@ -77,7 +77,10 @@ class SignInActivity : AppCompatActivity() {
                                 if (dataTask.isSuccessful) {
                                     val userData = dataTask.result?.getValue(User::class.java)
                                     if (userData != null) {
-                                        // Handle retrieved user data
+                                        val sharedPreferences = getSharedPreferences("MyAppPrefs", MODE_PRIVATE)
+                                        val editor = sharedPreferences.edit()
+                                        editor.putString("userId", userId)
+                                        editor.apply()
                                         val intent = Intent(this, DashboardActivity::class.java)
                                         intent.flags =
                                             Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK

@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.util.Log
 import android.view.View
 import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import com.example.studenttrackingapp.R
 import com.example.studenttrackingapp.databinding.ActivityDashboardBinding
@@ -50,8 +51,37 @@ class DashboardActivity : AppCompatActivity() {
             startActivity(intent)
         }
 
+        binding.menuImg.setOnClickListener {
+            showLogoutDialog()
+        }
+
 
     }
+
+    private fun showLogoutDialog() {
+        val builder = AlertDialog.Builder(this)
+        builder.setTitle("Logout")
+        builder.setMessage("Are you sure you want to logout?")
+
+        builder.setPositiveButton("OK") { dialog, _ ->
+            val sharedPreferences = getSharedPreferences("MyAppPrefs", MODE_PRIVATE)
+            val editor = sharedPreferences.edit()
+            editor.remove("userId")
+            editor.apply()
+            intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+            finish()
+
+            dialog.dismiss()
+        }
+
+        builder.setNegativeButton("Cancel") { dialog, _ ->
+            dialog.dismiss()
+        }
+
+        val dialog = builder.create()
+        dialog.show()
+    }
+
     private fun displayUserName() {
         val userId = auth.currentUser?.uid
 
@@ -69,14 +99,17 @@ class DashboardActivity : AppCompatActivity() {
                 }
 
                 override fun onCancelled(error: DatabaseError) {
-                    Toast.makeText(this@DashboardActivity, "Failed to retrieve user name: ${error.message}", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(
+                        this@DashboardActivity,
+                        "Failed to retrieve user name: ${error.message}",
+                        Toast.LENGTH_SHORT
+                    ).show()
                 }
             })
         } else {
             binding.userNameTv.text = "User Name"
         }
     }
-
 
 
     override fun onBackPressed() {

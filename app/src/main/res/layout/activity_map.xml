@@ -46,14 +46,31 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/relativeLayout" />
 
-    <androidx.appcompat.widget.SearchView
-        android:id="@+id/searchView"
-        android:layout_width="match_parent"
+    <RelativeLayout
+        android:id="@+id/search_rl"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_margin="20dp"
-        android:background="@color/white"
-        android:queryHint="Search location"
-        app:layout_constraintTop_toBottomOf="@+id/relativeLayout" />
+        app:layout_constraintTop_toBottomOf="@+id/relativeLayout">
+
+        <androidx.appcompat.widget.SearchView
+            android:id="@+id/searchView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="20dp"
+            android:background="@color/white"
+            android:queryHint="Search location" />
+
+    </RelativeLayout>
+
+    <ImageView
+        android:id="@+id/correndLocation_img"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="32dp"
+        android:src="@drawable/corrend_location_img"
+        app:layout_constraintBottom_toTopOf="@+id/selectedLocation_tv"
+        app:layout_constraintEnd_toEndOf="parent" />
 
     <TextView
         android:id="@+id/selectedLocation_tv"

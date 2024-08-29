@@ -174,12 +174,6 @@ class AddStudentActivity : AppCompatActivity() {
                     dispatchTakePictureIntent()
                     true
                 }
-
-                R.id.choose_from_gallery -> {
-                    dispatchPickPictureIntent()
-                    true
-                }
-
                 else -> false
             }
         }
@@ -197,16 +191,6 @@ class AddStudentActivity : AppCompatActivity() {
             takePictureIntent.resolveActivity(packageManager)?.also {
                 startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE)
             }
-        }
-    }
-
-    private fun dispatchPickPictureIntent() {
-        Intent(
-            Intent.ACTION_PICK,
-            MediaStore.Images.Media.EXTERNAL_CONTENT_URI
-        ).also { pickIntent ->
-            pickIntent.type = "image/*"
-            startActivityForResult(pickIntent, REQUEST_PICK_IMAGE)
         }
     }
 
